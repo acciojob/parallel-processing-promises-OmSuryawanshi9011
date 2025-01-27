@@ -1,22 +1,19 @@
 function downloadImage(image) {
   return new Promise((resolve, reject) => {
     fetch(image.url)
-      .then(response => {
-        // The fetch promise has resolved
+      .then((response) => {
         if (!response.ok) {
-          // But the download failed, so we reject our promise
           reject(`Failed to load image's URL: ${image.url}`);
         } else {
-          // The download succeeded, so we resolve our promise
           resolve(response.blob());
         }
       })
-      .catch(error => {
-        // The fetch promise rejected, so we reject our promise
+      .catch(() => {
         reject(`Failed to load image's URL: ${image.url}`);
       });
   });
-} 
+}
+
 const output = document.getElementById("output");
 const btn = document.getElementById("download-images-button");
 
@@ -25,33 +22,40 @@ const images = [
   { url: "https://picsum.photos/id/238/200/300" },
   { url: "https://picsum.photos/id/239/200/300" },
 ];
-btn.addEventListener('click', () => {
-  // Display loading spinner
-  document.getElementById('loading').innerHTML = 'Loading...';
 
+btn.addEventListener("click", () => {
+  // Clear any previous content
+  document.getElementById("output").innerHTML = "";
+  document.getElementById("error").innerHTML = "";
+
+  // Show loading spinner
+  const loadingDiv = document.getElementById("loading");
+  loadingDiv.style.display = "block";
+
+  // Start downloading images
   const imagePromises = images.map(downloadImage);
-// Display loading spinner
-document.getElementById('loading').innerHTML = 'Loading...';
 
-Promise.all(imagePromises)
-  .then(blobs => {
-    // Clear loading spinner
-    document.getElementById('loading').innerHTML = '';
+  Promise.all(imagePromises)
+    .then((blobs) => {
+      // Hide loading spinner
+      loadingDiv.style.display = "none";
 
-    // All images have been downloaded
-    // Create an img element for each blob and add it to the output div
-    blobs.forEach(blob => {
-      const img = document.createElement('img');
-      img.src = URL.createObjectURL(blob);
-      output.appendChild(img);
+      // Create image elements for each blob
+      blobs.forEach((blob) => {
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(blob);
+        img.style.margin = "10px";
+        img.width = 200; // Adjust image size as needed
+        img.height = 300;
+        output.appendChild(img);
+      });
+    })
+    .catch((error) => {
+      // Hide loading spinner
+      loadingDiv.style.display = "none";
+
+      // Display error message
+      const errorDiv = document.getElementById("error");
+      errorDiv.textContent = error;
     });
-  })
-  .catch(error => {
-    // Clear loading spinner
-    document.getElementById('loading').innerHTML = '';
-
-    // At least one image failed to download
-    // Display the error message in the error div
-    document.getElementById('error').textContent = error;
-  });
-
+});

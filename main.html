@@ -1,13 +1,23 @@
 <!DOCTYPE html>
-
 <html>
   <head>
     <link rel="stylesheet" href="styles.css" />
+    <title>Image Downloader</title>
   </head>
 
   <body>
-    <!-- the entire body must be written by student -->
+    <h1>Image Downloader</h1>
+    <button id="download-images-button">Download Images</button>
+
+    <!-- Loading Spinner -->
+    <div id="loading" style="display: none; color: blue; font-weight: bold;">Loading...</div>
+
+    <!-- Error Messages -->
+    <div id="error" style="color: red;"></div>
+
+    <!-- Output Container -->
     <div id="output"></div>
+
     <script type="text/javascript" src="./script.js"></script>
   </body>
 </html>
