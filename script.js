@@ -5,7 +5,7 @@ function downloadImage(image) {
         if (!response.ok) {
           reject(`Failed to load image's URL: ${image.url}`);
         } else {
-          resolve(response.blob());
+          resolve(image.url); // Resolve with the original URL instead of the blob
         }
       })
       .catch(() => {
@@ -36,14 +36,14 @@ btn.addEventListener("click", () => {
   const imagePromises = images.map(downloadImage);
 
   Promise.all(imagePromises)
-    .then((blobs) => {
+    .then((urls) => {
       // Hide loading spinner
       loadingDiv.style.display = "none";
 
-      // Create image elements for each blob
-      blobs.forEach((blob) => {
+      // Create image elements for each URL
+      urls.forEach((url) => {
         const img = document.createElement("img");
-        img.src = URL.createObjectURL(blob);
+        img.src = url; // Use the original URL
         img.style.margin = "10px";
         img.width = 200; // Adjust image size as needed
         img.height = 300;
